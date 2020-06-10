@@ -1,0 +1,17 @@
+[Unit]
+Description=Paho MQTT client for Django
+After=syslog.target
+#After=network.target
+
+[Service]
+Type=simple
+User=msdemo
+Group=msdemo
+WorkingDirectory=/home/msdemo/project
+Environment="VIRTUAL_ENV=/home/msdemo/venv3.6"
+Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
+ExecStart=/home/msdemo/venv3.6/bin/python -m mqtt.sub
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

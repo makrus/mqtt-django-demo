@@ -1,0 +1,17 @@
+[Unit]
+Description=msdemo uWSGI app
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi \
+        --ini /home/msdemo/project/project/uwsgi.ini
+User=msdemo
+Group=www-data
+Restart=on-failure
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
