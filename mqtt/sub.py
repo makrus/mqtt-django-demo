@@ -1,12 +1,12 @@
 import paho.mqtt.client as mqtt
 import os, django
-from django.conf import settings
 from django.utils import timezone
 from datetime import datetime as dt
 
 
 os.environ["DJANGO_SETTINGS_MODULE"] = 'project.settings'
 django.setup()
+from django.conf import settings
 from transit.models import *
 
 
@@ -35,19 +35,24 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     data = str(msg.payload).rstrip("'").lstrip("b'").split(',')
     # print(msg.topic," ",data)
-    if ('temperature' in msg.topic) or ('humidity' in msg.topic):
-        record = DigitalChannelData(
-            name=msg.topic,
-            time_sent=dt.strptime(data[0], "%Y-%m-%dT%H:%M:%S%z"),
-            time_recieved=dt.now(tz=timezone.get_current_timezone()),
-            value=float(data[1])
-        )
-    elif 'statusled' in msg.topic:
+    # print('timestamp', msg.timestamp)
+    # print('state', msg.state)
+    # print('properties', msg.properties)
+    # print('info', msg.info)
+    # print('payload', msg.payload)
+    if Channel.objects.get(name = msg.topic).type:
         record = BooleanChannelData(
             name = msg.topic,
             time_sent = dt.strptime(data[0], "%Y-%m-%dT%H:%M:%S%z"),
             time_recieved = dt.now(tz=timezone.get_current_timezone()),
             value = True if data[1]=='on' else False
+        )
+    else:
+        record = DigitalChannelData(
+            name=msg.topic,
+            time_sent=dt.strptime(data[0], "%Y-%m-%dT%H:%M:%S%z"),
+            time_recieved=dt.now(tz=timezone.get_current_timezone()),
+            value=float(data[1])
         )
     record.save()
     # print(dt.now())
