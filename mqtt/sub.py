@@ -21,15 +21,8 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     # client.subscribe("$SYS/#")
-    client.subscribe([
-        ('house/device1/temperature',2),
-        ('house/device1/humidity',2),
-        ('house/device1/statusled',2),
-        ('house/device0/temperature',2),
-        ('house/device0/humidity',2),
-        ('house/device0/statusled',2),
-        ('school/channel10',2)
-    ])
+    channel_list = [(c.name, 2) for c in Channel.objects.all()]
+    client.subscribe(channel_list)
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):

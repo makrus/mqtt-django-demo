@@ -1,3 +1,11 @@
 __pycache__/
 *.pyc
 transit/migrations/
+db.sqlite3
+manage.py
+mqtt/pub.py
+project/settings.py
+static/
+transit/mqtt.py
+transit/tests.py
+uwsgi.log
